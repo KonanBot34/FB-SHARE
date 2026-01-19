@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FB-SHARE KURAPIKO</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* POPUP */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+.popup {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+}
+.popup h2 {
+    color: #2563eb;
+}
+.continue {
+    margin-top: 15px;
+    color: #2563eb;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* MAIN */
+.container {
+    background: #fff;
+    width: 100%;
+    max-width: 420px;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+h1 {
+    text-align: center;
+    color: #2563eb;
+    margin-bottom: 5px;
+}
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 500;
+    color: #1e3a8a;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+textarea, input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #93c5fd;
+    margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif;
+}
+
+textarea {
+    min-height: 100px;
+    resize: none;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #2563eb;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* HISTORY */
+.history {
+    display: none;
+    margin-top: 20px;
+    background: #eff6ff;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.history h3 {
+    margin: 0 0 10px;
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.counter {
+    font-weight: 700;
+    font-size: 18px;
+}
+</style>
+</head>
+<body>
+
+<!-- POPUP -->
+<div class="overlay" id="welcome">
+    <div class="popup">
+        <h2>HI MS/MR<br>ENJOY!</h2>
+        <div class="continue" onclick="closePopup()">| CONTINUE |</div>
+    </div>
+</div>
+
+<div class="container">
+    <h1>spamShare</h1>
+    <div class="subtitle">FB-SHARE KURAPIKO</div>
+
+    <!-- API KEY -->
+    <label>API KEY</label>
+    <input type="text" id="apikey" placeholder="Enter API key">
+
+    <!-- COOKIES -->
+    <label>Cookies</label>
+    <textarea placeholder="Paste your FB cookies here..."></textarea>
+
+    <!-- LINK -->
+    <label>Link</label>
+    <input type="text" placeholder="https://facebook.com/postlink">
+
+    <!-- LIMIT / DELAY -->
+    <div class="row">
+        <input type="number" id="limit" placeholder="Limit">
+        <input type="number" id="delay" placeholder="Delay">
+    </div>
+
+    <button onclick="startShare()">START SHARE</button>
+
+    <!-- HISTORY -->
+    <div class="history" id="history">
+        <h3>HISTORY</h3>
+        Shared: <span class="counter" id="count">0</span>
+    </div>
+</div>
+
+<script>
+let shared = 0;
+let interval;
+
+function closePopup() {
+    document.getElementById("welcome").style.display = "none";
+}
+
+function startShare() {
+    const limit = document.getElementById("limit").value || 0;
+    const delay = (document.getElementById("delay").value || 1) * 1000;
+
+    document.getElementById("history").style.display = "block";
+    shared = 0;
+    document.getElementById("count").innerText = shared;
+
+    clearInterval(interval);
+    interval = setInterval(() => {
+        if (shared >= limit) {
+            clearInterval(interval);
+            return;
+        }
+        shared++;
+        document.getElementById("count").innerText = shared;
+    }, delay);
+}
+</script>
+
+</body>
+</html>
