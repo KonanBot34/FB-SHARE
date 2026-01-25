@@ -144,54 +144,68 @@ button {
     <label>API KEY</label>
     <input type="text" id="apikey" placeholder="Enter API key">
 
-    <!-- COOKIES -->
-    <label>Cookies</label>
-    <textarea placeholder="Paste your FB cookies here..."></textarea>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FB Share</title>
+</head>
 
-    <!-- LINK -->
-    <label>Link</label>
-    <input type="text" placeholder="https://facebook.com/postlink">
+<body>
 
-    <!-- LIMIT / DELAY -->
-    <div class="row">
-        <input type="number" id="limit" placeholder="Limit">
-        <input type="number" id="delay" placeholder="Delay">
-    </div>
+<h2>FB SHARE TOOL</h2>
 
-    <button onclick="startShare()">START SHARE</button>
+<label>COOKIE / APPSTATE</label><br>
+<input type="text" id="cookie"><br><br>
 
-    <!-- HISTORY -->
-    <div class="history" id="history">
-        <h3>HISTORY</h3>
-        Shared: <span class="counter" id="count">0</span>
-    </div>
-</div>
+<label>POST LINK</label><br>
+<input type="text" id="link"><br><br>
+
+<label>LIMIT</label><br>
+<input type="number" id="limit"><br><br>
+
+<button onclick="startShare()">START</button>
+
+<hr>
+
+<div id="logs"></div>
+
+<p>Developer by : Lhanz Kurapiko</p>
 
 <script>
-let shared = 0;
-let interval;
-
-function closePopup() {
-    document.getElementById("welcome").style.display = "none";
+function log(text){
+  const div = document.createElement("div");
+  div.innerText = text;
+  document.getElementById("logs").appendChild(div);
 }
 
-function startShare() {
-    const limit = document.getElementById("limit").value || 0;
-    const delay = (document.getElementById("delay").value || 1) * 1000;
+async function startShare(){
+  document.getElementById("logs").innerHTML = "";
 
-    document.getElementById("history").style.display = "block";
-    shared = 0;
-    document.getElementById("count").innerText = shared;
+  const cookie = document.getElementById("cookie").value;
+  const link = document.getElementById("link").value;
+  const limit = document.getElementById("limit").value;
 
-    clearInterval(interval);
-    interval = setInterval(() => {
-        if (shared >= limit) {
-            clearInterval(interval);
-            return;
-        }
-        shared++;
-        document.getElementById("count").innerText = shared;
-    }, delay);
+  if(!cookie || !link || !limit){
+    log("ERROR: may kulang");
+    return;
+  }
+
+  log("STARTING...");
+
+  const res = await fetch("/api/share",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ cookie, link, limit })
+  });
+
+  const data = await res.json();
+
+  if(data.status === "success"){
+    data.logs.forEach(l => log(l));
+    log("DONE");
+  }else{
+    log("ERROR: " + data.message);
+  }
 }
 </script>
 
